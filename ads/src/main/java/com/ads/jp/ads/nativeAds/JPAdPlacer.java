@@ -15,6 +15,7 @@ import com.ads.jp.admob.Admob;
 import com.ads.jp.ads.wrapper.ApAdValue;
 import com.ads.jp.ads.wrapper.ApNativeAd;
 import com.ads.jp.ads.wrapper.StatusAd;
+import com.ads.jp.config.JPAdConfig;
 import com.ads.jp.funtion.AdCallback;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.AdValue;
@@ -106,7 +107,7 @@ public class JPAdPlacer {
                             super.onAdImpression();
                             JPAdPlacer.this.onAdImpression();
                         }
-                    });
+                    }, JPAdConfig.ADJUST_TOKEN_TIKTOK);
                 });
             }
         } else {
@@ -145,7 +146,7 @@ public class JPAdPlacer {
                 Log.i(TAG, "native ad in recycle loaded: " + countLoadAd);
                 countLoadAd++;
             }
-        }, Math.min(listAd.size(), settings.getPositionFixAd()));
+        }, Math.min(listAd.size(), settings.getPositionFixAd()), JPAdConfig.ADJUST_TOKEN_TIKTOK);
     }
 
     public boolean isAdPosition(int pos) {

@@ -56,11 +56,11 @@ public class JPBannerAdView extends RelativeLayout {
     }
 
     public void loadInlineBanner(Activity activity, String idBanner, String inlineStyle) {
-        Admob.getInstance().loadInlineBanner(activity, idBanner, inlineStyle);
+        JPAd.getInstance().loadInlineBanner(activity, idBanner, inlineStyle);
     }
 
     public void loadInlineBanner(Activity activity, String idBanner, String inlineStyle, AdCallback adCallback) {
-        Admob.getInstance().loadInlineBanner(activity, idBanner, inlineStyle, adCallback);
+        JPAd.getInstance().loadInlineBanner(activity, idBanner, inlineStyle, adCallback);
     }
 
     public void loadBannerFragment(Activity activity, String idBanner) {
@@ -72,10 +72,10 @@ public class JPBannerAdView extends RelativeLayout {
     }
 
     public void loadInlineBannerFragment(Activity activity, String idBanner, String inlineStyle) {
-        Admob.getInstance().loadInlineBannerFragment(activity, idBanner, getRootView(), inlineStyle);
+        JPAd.getInstance().loadBannerInlineFragment(activity, idBanner, getRootView(), inlineStyle);
     }
 
     public void loadInlineBannerFragment(Activity activity, String idBanner, String inlineStyle, AdCallback adCallback) {
-        Admob.getInstance().loadInlineBannerFragment(activity, idBanner, getRootView(), inlineStyle, adCallback);
+        JPAd.getInstance().loadBannerInlineFragment(activity, idBanner, getRootView(), inlineStyle, adCallback);
     }
 }

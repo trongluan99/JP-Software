@@ -25,6 +25,7 @@ import androidx.lifecycle.ProcessLifecycleOwner;
 
 import com.ads.jp.R;
 import com.ads.jp.billing.AppPurchase;
+import com.ads.jp.config.JPAdConfig;
 import com.ads.jp.dialog.PrepareLoadingAdsDialog;
 import com.ads.jp.dialog.ResumeLoadingDialog;
 import com.ads.jp.event.JPLogEventManager;
@@ -283,6 +284,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                         ad.getAdUnitId(),
                                         ad.getResponseInfo()
                                                 .getMediationAdapterClassName(), AdType.APP_OPEN);
+                                JPLogEventManager.logPaidAdjustWithToken(adValue, ad.getAdUnitId(), JPAdConfig.ADJUST_TOKEN_TIKTOK);
                             });
                             AppOpenManager.this.appResumeLoadTime = (new Date()).getTime();
                         } else {
@@ -297,6 +299,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                         ad.getAdUnitId(),
                                         ad.getResponseInfo()
                                                 .getMediationAdapterClassName(), AdType.APP_OPEN);
+                                JPLogEventManager.logPaidAdjustWithToken(adValue, ad.getAdUnitId(), JPAdConfig.ADJUST_TOKEN_TIKTOK);
                             });
                             AppOpenManager.this.splashLoadTime = (new Date()).getTime();
                         }
@@ -734,6 +737,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                     appOpenAd.getAdUnitId(),
                                     appOpenAd.getResponseInfo()
                                             .getMediationAdapterClassName(), AdType.APP_OPEN);
+                            JPLogEventManager.logPaidAdjustWithToken(adValue, appOpenAd.getAdUnitId(), JPAdConfig.ADJUST_TOKEN_TIKTOK);
                         });
 
                         if (!isAppOpenShowed) {
@@ -842,6 +846,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                     appOpenAd.getAdUnitId(),
                                     appOpenAd.getResponseInfo()
                                             .getMediationAdapterClassName(), AdType.APP_OPEN);
+                            JPLogEventManager.logPaidAdjustWithToken(adValue, appOpenAd.getAdUnitId(), JPAdConfig.ADJUST_TOKEN_TIKTOK);
                         });
                     }
 
@@ -938,6 +943,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                     appOpenAd.getAdUnitId(),
                                     appOpenAd.getResponseInfo()
                                             .getMediationAdapterClassName(), AdType.APP_OPEN);
+                            JPLogEventManager.logPaidAdjustWithToken(adValue, appOpenAd.getAdUnitId(), JPAdConfig.ADJUST_TOKEN_TIKTOK);
                         });
                     }
 
@@ -1007,6 +1013,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                     appOpenAd.getAdUnitId(),
                                     appOpenAd.getResponseInfo()
                                             .getMediationAdapterClassName(), AdType.APP_OPEN);
+                            JPLogEventManager.logPaidAdjustWithToken(adValue, appOpenAd.getAdUnitId(), JPAdConfig.ADJUST_TOKEN_TIKTOK);
                         });
 
                         splashAdOpen = appOpenAd;
@@ -1045,7 +1052,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                         public void onTick(long l) {
                                             if (statusInter == Type_Load_Success && !isAppOpenShowed) {
                                                 isAppOpenShowed = true;
-                                                Admob.getInstance().onShowSplash(activity, adListener, splashAdInter);
+                                                Admob.getInstance().onShowSplash(activity, adListener, splashAdInter, JPAdConfig.ADJUST_TOKEN_TIKTOK);
                                             } else if (statusInter == Type_Load_Fail && !isAppOpenShowed) {
                                                 if (adListener != null) {
                                                     isAppOpenShowed = true;
@@ -1103,7 +1110,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                 public void onTick(long l) {
                                     if (statusInter == Type_Load_Success && !isAppOpenShowed) {
                                         isAppOpenShowed = true;
-                                        Admob.getInstance().onShowSplash(activity, adListener, splashAdInter);
+                                        Admob.getInstance().onShowSplash(activity, adListener, splashAdInter, JPAdConfig.ADJUST_TOKEN_TIKTOK);
                                     } else if (statusInter == Type_Load_Fail && !isAppOpenShowed) {
                                         if (adListener != null) {
                                             isAppOpenShowed = true;
@@ -1142,6 +1149,8 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                     interstitialAd.getAdUnitId(),
                                     interstitialAd.getResponseInfo()
                                             .getMediationAdapterClassName(), AdType.INTERSTITIAL);
+
+                            JPLogEventManager.logPaidAdjustWithToken(adValue, interstitialAd.getAdUnitId(), JPAdConfig.ADJUST_TOKEN_TIKTOK);
                         });
 
                         splashAdInter = interstitialAd;
@@ -1211,6 +1220,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                         appOpenAd.getAdUnitId(),
                                         appOpenAd.getResponseInfo()
                                                 .getMediationAdapterClassName(), AdType.APP_OPEN);
+                                JPLogEventManager.logPaidAdjustWithToken(adValue, appOpenAd.getAdUnitId(), JPAdConfig.ADJUST_TOKEN_TIKTOK);
                             });
 
                             (new Handler()).postDelayed(() -> {
@@ -1318,6 +1328,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                             appOpenAd.getAdUnitId(),
                             appOpenAd.getResponseInfo()
                                     .getMediationAdapterClassName(), AdType.APP_OPEN);
+                    JPLogEventManager.logPaidAdjustWithToken(adValue, appOpenAd.getAdUnitId(), JPAdConfig.ADJUST_TOKEN_TIKTOK);
                 });
 
                 splashAdHigh = appOpenAd;
@@ -1406,6 +1417,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                     appOpenAd.getAdUnitId(),
                                     appOpenAd.getResponseInfo()
                                             .getMediationAdapterClassName(), AdType.APP_OPEN);
+                            JPLogEventManager.logPaidAdjustWithToken(adValue, appOpenAd.getAdUnitId(), JPAdConfig.ADJUST_TOKEN_TIKTOK);
                         });
 
                         splashAdAll = appOpenAd;
@@ -1601,7 +1613,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         if (!this.isNetworkConnected(context)) {
             (new Handler()).postDelayed(new Runnable() {
                 public void run() {
-                    adCallback.onAdFailedToLoad((LoadAdError)null);
+                    adCallback.onAdFailedToLoad((LoadAdError) null);
                     adCallback.onNextAction();
                 }
             }, timeDelay);
@@ -1620,7 +1632,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                 public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                     super.onAdFailedToLoad(loadAdError);
                     handler.removeCallbacks(timeOutRunnable);
-                    adCallback.onAdFailedToLoad((LoadAdError)null);
+                    adCallback.onAdFailedToLoad((LoadAdError) null);
                     adCallback.onNextAction();
                 }
 
@@ -1636,6 +1648,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                 appOpenAd.getAdUnitId(),
                                 appOpenAd.getResponseInfo()
                                         .getMediationAdapterClassName(), AdType.APP_OPEN);
+                        JPLogEventManager.logPaidAdjustWithToken(adValue, appOpenAd.getAdUnitId(), JPAdConfig.ADJUST_TOKEN_TIKTOK);
                     });
                     if (isShowAdIfReady) {
                         long elapsedTime = System.currentTimeMillis() - currentTimeMillis;
@@ -1664,23 +1677,23 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         if (!this.isNetworkConnected(context)) {
             (new Handler()).postDelayed(new Runnable() {
                 public void run() {
-                    adCallback.onAdFailedToLoad((LoadAdError)null);
+                    adCallback.onAdFailedToLoad((LoadAdError) null);
                     adCallback.onNextAction();
                 }
             }, 3000L);
         } else {
             if (listIDResume == null) {
-                adCallback.onAdFailedToLoad((LoadAdError)null);
+                adCallback.onAdFailedToLoad((LoadAdError) null);
                 adCallback.onNextAction();
                 return;
             }
 
             if (listIDResume.size() > 0) {
-                Log.e("AppOpenManager", "load ID :" + (String)listIDResume.get(0));
+                Log.e("AppOpenManager", "load ID :" + (String) listIDResume.get(0));
             }
 
             if (listIDResume.size() < 1) {
-                adCallback.onAdFailedToLoad((LoadAdError)null);
+                adCallback.onAdFailedToLoad((LoadAdError) null);
                 adCallback.onNextAction();
                 return;
             }
@@ -1691,7 +1704,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                     super.onAdFailedToLoad(loadAdError);
                     listIDResume.remove(0);
                     if (listIDResume.size() == 0) {
-                        adCallback.onAdFailedToLoad((LoadAdError)null);
+                        adCallback.onAdFailedToLoad((LoadAdError) null);
                         adCallback.onNextAction();
                     } else {
                         AppOpenManager.this.loadOpenAppAdSplashFloor(context, listIDResume, isShowAdIfReady, adCallback);
@@ -1708,6 +1721,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                 appOpenAd.getAdUnitId(),
                                 appOpenAd.getResponseInfo()
                                         .getMediationAdapterClassName(), AdType.APP_OPEN);
+                        JPLogEventManager.logPaidAdjustWithToken(adValue, appOpenAd.getAdUnitId(), JPAdConfig.ADJUST_TOKEN_TIKTOK);
                     });
                     if (isShowAdIfReady) {
                         AppOpenManager.this.showAppOpenSplash(context, adCallback);
@@ -1717,7 +1731,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
                 }
             };
-            AppOpenAd.load(context, (String)listIDResume.get(0), adRequest, 1, appOpenAdLoadCallback);
+            AppOpenAd.load(context, (String) listIDResume.get(0), adRequest, 1, appOpenAdLoadCallback);
         }
 
     }
@@ -1731,11 +1745,11 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                 }
 
             }
-        }, (long)timeDelay);
+        }, (long) timeDelay);
     }
 
     private boolean isNetworkConnected(Context context) {
-        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
 }
