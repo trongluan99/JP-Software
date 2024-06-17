@@ -11,13 +11,14 @@ import java.util.List;
 
 public abstract class AdsMultiDexApplication extends MultiDexApplication {
 
-    protected JPAdConfig jpAdConfig;
-    protected List<String> listTestDevice ;
+    protected JPAdConfig mJPAdConfig;
+    protected List<String> listTestDevice;
+
     @Override
     public void onCreate() {
         super.onCreate();
         listTestDevice = new ArrayList<String>();
-        jpAdConfig = new JPAdConfig(this);
+        mJPAdConfig = new JPAdConfig(this);
         if (SharePreferenceUtils.getInstallTime(this) == 0) {
             SharePreferenceUtils.setInstallTime(this);
         }

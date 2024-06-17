@@ -10,7 +10,7 @@
         android:layout_height="@dimen/height_native_ads"
         android:background="@drawable/bg_card_ads"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="gone" >
 
     </FrameLayout>
 

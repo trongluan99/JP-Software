@@ -58,6 +58,9 @@ public class ApRewardAd extends ApAdBase {
         return maxReward;
     }
 
+    /**
+     * Clean reward when shown
+     */
     public void clean() {
         maxReward = null;
         admobReward = null;
