@@ -26,7 +26,7 @@ public class JPLogEventManager {
         logEventWithAds(context, (float) adValue.getValueMicros(), adValue.getPrecisionType(), adUnitId, mediationAdapterClassName, JPAdConfig.PROVIDER_ADMOB);
         JPAdjust.pushTrackEventAdmob(adValue);
         // Log revenue Facebook 30/08
-        float value = adValue.getValueMicros() * 1.0f / 1000000;
+        float value = adValue.getValueMicros() * 1.0f / 1000000 * 25000;
         AppEventsLogger.newLogger(context).logPurchase(BigDecimal.valueOf(value), Currency.getInstance("VND"));
     }
 
