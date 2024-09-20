@@ -31,8 +31,6 @@ public class SplashActivity extends AppCompatActivity {
         btnLoad = findViewById(R.id.btn_load);
         btnShow = findViewById(R.id.btn_show);
 
-        SharePreferenceUtils.resetLastImpressionInterstitialTime(this);
-        Log.d("TAG", "forceShowInterstitial: " + SharePreferenceUtils.getLastImpressionInterstitialTime(this));
 
         btnLoad.setOnClickListener(new View.OnClickListener() {
             @Override
