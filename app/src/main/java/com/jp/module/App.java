@@ -27,6 +27,7 @@ public class App extends AdsMultiDexApplication {
         mJPAdConfig.setAdjustConfig(adjustConfig);
         mJPAdConfig.setFacebookClientToken(getString(R.string.facebook_client_token));
         mJPAdConfig.setAdjustTokenTiktok(getString(R.string.tiktok_token));
+        mJPAdConfig.setIntervalInterstitialAd(45);
 
         mJPAdConfig.setIdAdResume("");
 

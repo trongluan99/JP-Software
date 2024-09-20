@@ -270,9 +270,14 @@ public class JPAd {
 
     public void forceShowInterstitial(@NonNull Context context, ApInterstitialAd mInterstitialAd,
                                       @NonNull final AdCallback callback, boolean shouldReloadAds) {
+        long time1 = System.currentTimeMillis();
+        long time2 = SharePreferenceUtils.getLastImpressionInterstitialTime(context);
+        long time3 = JPAd.getInstance().adConfig.getIntervalInterstitialAd() * 1000L;
+        Log.d(TAG, "forceShowInterstitial: " + time1 + " - " + time2 + " - " + time3 + " - " + (time1 - time2));
         if (System.currentTimeMillis() - SharePreferenceUtils.getLastImpressionInterstitialTime(context)
                 < JPAd.getInstance().adConfig.getIntervalInterstitialAd() * 1000L
         ) {
+            Log.d(TAG, "forceShowInterstitial: ");
             callback.onNextAction();
             return;
         }
