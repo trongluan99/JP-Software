@@ -27,12 +27,14 @@ import com.adjust.sdk.OnEventTrackingFailedListener;
 import com.adjust.sdk.OnEventTrackingSucceededListener;
 import com.adjust.sdk.OnSessionTrackingFailedListener;
 import com.adjust.sdk.OnSessionTrackingSucceededListener;
+import com.ads.jp.R;
 import com.ads.jp.admob.Admob;
 import com.ads.jp.admob.AppOpenManager;
 import com.ads.jp.ads.wrapper.ApInterstitialAd;
 import com.ads.jp.ads.wrapper.ApInterstitialPriorityAd;
 import com.ads.jp.ads.wrapper.ApNativeAd;
 import com.ads.jp.config.JPAdConfig;
+import com.ads.jp.dialog.DialogShowNativeFull;
 import com.ads.jp.event.JPAdjust;
 import com.ads.jp.funtion.AdCallback;
 import com.ads.jp.funtion.RewardCallback;
@@ -868,6 +870,49 @@ public class JPAd {
                 },
                 false
         );
+    }
+
+    public void loadSplashInterOrNativeAds(Activity activity, String idInter, String idNative, int layoutCustomNative, Boolean isRemote, long timeOut, long timeDelay, AdCallback callback) {
+        if (isRemote) {
+            Admob.getInstance().loadSplashInterstitialAds(activity, idInter, timeOut, timeDelay, callback);
+        } else {
+            Admob.getInstance().loadNativeAd(activity, idNative, new AdCallback() {
+                @Override
+                public void onUnifiedNativeAdLoaded(@NonNull NativeAd unifiedNativeAd) {
+                    super.onUnifiedNativeAdLoaded(unifiedNativeAd);
+                    Log.d("LuanDev", "onNativeAdLoaded: 1");
+                    ApNativeAd apNativeAd = new ApNativeAd();
+                    apNativeAd.setAdmobNativeAd(unifiedNativeAd);
+                    apNativeAd.setLayoutCustomNative(layoutCustomNative);
+                    DialogShowNativeFull dialogShowNativeFull = new DialogShowNativeFull(activity, apNativeAd, new AdCallback() {
+                        @Override
+                        public void onNextAction() {
+                            super.onNextAction();
+                            callback.onNextAction();
+                        }
+                    });
+                    dialogShowNativeFull.show();
+                }
+
+                @Override
+                public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                    super.onAdFailedToLoad(i);
+                    onNextAction();
+                }
+
+                @Override
+                public void onAdFailedToShow(@Nullable AdError adError) {
+                    super.onAdFailedToShow(adError);
+                    onNextAction();
+                }
+
+                @Override
+                public void onAdClicked() {
+                    super.onAdClicked();
+                    callback.onAdClicked();
+                }
+            });
+        }
     }
 
 }

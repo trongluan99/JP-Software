@@ -6,17 +6,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.ads.jp.ads.JPAd;
 import com.ads.jp.ads.wrapper.ApInterstitialAd;
-import com.ads.jp.billing.AppPurchase;
 import com.ads.jp.funtion.AdCallback;
-import com.ads.jp.util.SharePreferenceUtils;
-import com.google.android.gms.ads.LoadAdError;
 
 @SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
@@ -35,7 +31,7 @@ public class SplashActivity extends AppCompatActivity {
         btnLoad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                JPAd.getInstance().getInterstitialAds(SplashActivity.this, BuildConfig.ad_interstitial_splash, new AdCallback() {
+                /*JPAd.getInstance().getInterstitialAds(SplashActivity.this, BuildConfig.ad_interstitial_splash, new AdCallback() {
                     @Override
                     public void onApInterstitialLoad(@Nullable ApInterstitialAd apInterstitialAd) {
                         super.onApInterstitialLoad(apInterstitialAd);
@@ -47,6 +43,13 @@ public class SplashActivity extends AppCompatActivity {
                     public void onAdFailedToLoad(@Nullable LoadAdError i) {
                         super.onAdFailedToLoad(i);
                         Toast.makeText(SplashActivity.this, "Ads Failed", Toast.LENGTH_SHORT).show();
+                    }
+                });*/
+                JPAd.getInstance().loadSplashInterOrNativeAds(SplashActivity.this, BuildConfig.ad_interstitial_splash, BuildConfig.ad_native, R.layout.native_full, false, 30000, 5000, new AdCallback() {
+                    @Override
+                    public void onNextAction() {
+                        super.onNextAction();
+                        startActivity(new Intent(SplashActivity.this, MainActivity.class));
                     }
                 });
             }
