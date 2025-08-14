@@ -31,6 +31,7 @@ public class DialogShowNativeFull extends Dialog {
         this.activity = activity;
         this.apNativeAd = apNativeAd;
         this.adCallback = adCallback;
+        setCancelable(false);
     }
 
     @Override
@@ -51,7 +52,7 @@ public class DialogShowNativeFull extends Dialog {
             JPAd.getInstance().populateNativeAdView(activity, apNativeAd, frAds, shimmerFrameLayout);
             new Handler().postDelayed(() -> {
                 ivClose.setVisibility(View.VISIBLE);
-            }, 3000);
+            }, 2000);
         }
 
         ivClose.setOnClickListener(view -> {

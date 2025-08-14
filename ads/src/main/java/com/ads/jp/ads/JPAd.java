@@ -27,7 +27,6 @@ import com.adjust.sdk.OnEventTrackingFailedListener;
 import com.adjust.sdk.OnEventTrackingSucceededListener;
 import com.adjust.sdk.OnSessionTrackingFailedListener;
 import com.adjust.sdk.OnSessionTrackingSucceededListener;
-import com.ads.jp.R;
 import com.ads.jp.admob.Admob;
 import com.ads.jp.admob.AppOpenManager;
 import com.ads.jp.ads.wrapper.ApInterstitialAd;
@@ -872,9 +871,90 @@ public class JPAd {
         );
     }
 
+    boolean isNativeLoaded = false;
+    boolean isInterLoaded = true;
+
     public void loadSplashInterOrNativeAds(Activity activity, String idInter, String idNative, int layoutCustomNative, Boolean isRemote, long timeOut, long timeDelay, AdCallback callback) {
+        isNativeLoaded = false;
+        isInterLoaded = true;
         if (isRemote) {
-            Admob.getInstance().loadSplashInterstitialAds(activity, idInter, timeOut, timeDelay, callback);
+            Admob.getInstance().loadSplashInterstitialAds(activity, idInter, timeOut, timeDelay, new AdCallback() {
+                @Override
+                public void onNextAction() {
+                    super.onNextAction();
+                    Log.d(TAG, "onAdClosed: 98");
+                    Admob.getInstance().loadNativeAd(activity, idNative, new AdCallback() {
+                        @Override
+                        public void onUnifiedNativeAdLoaded(@NonNull NativeAd unifiedNativeAd) {
+                            super.onUnifiedNativeAdLoaded(unifiedNativeAd);
+                            isNativeLoaded = true;
+                            Log.d(TAG, "onAdClosed: 99");
+                            ApNativeAd apNativeAd = new ApNativeAd();
+                            apNativeAd.setAdmobNativeAd(unifiedNativeAd);
+                            apNativeAd.setLayoutCustomNative(layoutCustomNative);
+                            DialogShowNativeFull dialogShowNativeFull = new DialogShowNativeFull(activity, apNativeAd, new AdCallback() {
+                                @Override
+                                public void onNextAction() {
+                                    super.onNextAction();
+                                    callback.onNextAction();
+                                }
+                            });
+                            dialogShowNativeFull.show();
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                            super.onAdFailedToLoad(i);
+                            isNativeLoaded = false;
+                            if (!isInterLoaded) {
+                                callback.onNextAction();
+                            }
+                            Log.d(TAG, "onAdClosed: 100");
+                        }
+
+                        @Override
+                        public void onAdFailedToShow(@Nullable AdError adError) {
+                            super.onAdFailedToShow(adError);
+                            isNativeLoaded = false;
+                            Log.d(TAG, "onAdClosed: 101");
+                        }
+
+                        @Override
+                        public void onAdClicked() {
+                            super.onAdClicked();
+                            callback.onAdClicked();
+                        }
+                    });
+                }
+
+                @Override
+                public void onAdClosed() {
+                    super.onAdClosed();
+                    if (!isNativeLoaded) {
+                        callback.onNextAction();
+                        Log.d(TAG, "onAdClosed: 102");
+                    }
+                }
+
+                @Override
+                public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                    super.onAdFailedToLoad(i);
+                    isInterLoaded = false;
+                    callback.onAdFailedToLoad(i);
+                }
+
+                @Override
+                public void onAdClicked() {
+                    super.onAdClicked();
+                    callback.onAdClicked();
+                }
+
+                @Override
+                public void onAdImpression() {
+                    super.onAdImpression();
+                    callback.onAdImpression();
+                }
+            });
         } else {
             Admob.getInstance().loadNativeAd(activity, idNative, new AdCallback() {
                 @Override
@@ -915,4 +995,157 @@ public class JPAd {
         }
     }
 
+    public void forceShowInterstitialAndNativeFull(@NonNull Activity activity, ApInterstitialAd mInterstitialAd, String idNative, int layoutCustomNative,
+                                                   @NonNull final AdCallback callback, boolean shouldReloadAds) {
+        isNativeLoaded = false;
+        isInterLoaded = true;
+        long time1 = System.currentTimeMillis();
+        long time2 = SharePreferenceUtils.getLastImpressionInterstitialTime(activity);
+        long time3 = JPAd.getInstance().adConfig.getIntervalInterstitialAd() * 1000L;
+        Log.d(TAG, "forceShowInterstitial: " + time1 + " - " + time2 + " - " + time3 + " - " + (time1 - time2));
+        if (System.currentTimeMillis() - SharePreferenceUtils.getLastImpressionInterstitialTime(activity)
+                < JPAd.getInstance().adConfig.getIntervalInterstitialAd() * 1000L
+        ) {
+            Log.d(TAG, "forceShowInterstitial: ");
+            callback.onNextAction();
+            return;
+        }
+        if (mInterstitialAd == null || mInterstitialAd.isNotReady()) {
+            callback.onNextAction();
+            return;
+        }
+        AdCallback adCallback = new AdCallback() {
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                callback.onAdClosed();
+                if (shouldReloadAds) {
+                    Admob.getInstance().getInterstitialAds(activity, mInterstitialAd.getInterstitialAd().getAdUnitId(), new AdCallback() {
+                        @Override
+                        public void onInterstitialLoad(@Nullable InterstitialAd interstitialAd) {
+                            super.onInterstitialLoad(interstitialAd);
+                            mInterstitialAd.setInterstitialAd(interstitialAd);
+                            callback.onInterstitialLoad(mInterstitialAd.getInterstitialAd());
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                            super.onAdFailedToLoad(i);
+                            mInterstitialAd.setInterstitialAd(null);
+                            callback.onAdFailedToLoad(i);
+                        }
+
+                        @Override
+                        public void onAdFailedToShow(@Nullable AdError adError) {
+                            super.onAdFailedToShow(adError);
+                            callback.onAdFailedToShow(adError);
+                        }
+
+                    });
+                } else {
+                    mInterstitialAd.setInterstitialAd(null);
+                }
+
+                if (!isNativeLoaded) {
+                    callback.onNextAction();
+                    Log.d(TAG, "onAdClosed: 102");
+                }
+            }
+
+            @Override
+            public void onNextAction() {
+                super.onNextAction();
+                Admob.getInstance().loadNativeAd(activity, idNative, new AdCallback() {
+                    @Override
+                    public void onUnifiedNativeAdLoaded(@NonNull NativeAd unifiedNativeAd) {
+                        super.onUnifiedNativeAdLoaded(unifiedNativeAd);
+                        isNativeLoaded = true;
+                        Log.d(TAG, "onAdClosed: 99");
+                        ApNativeAd apNativeAd = new ApNativeAd();
+                        apNativeAd.setAdmobNativeAd(unifiedNativeAd);
+                        apNativeAd.setLayoutCustomNative(layoutCustomNative);
+                        DialogShowNativeFull dialogShowNativeFull = new DialogShowNativeFull(activity, apNativeAd, new AdCallback() {
+                            @Override
+                            public void onNextAction() {
+                                super.onNextAction();
+                                callback.onNextAction();
+                            }
+                        });
+                        dialogShowNativeFull.show();
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                        super.onAdFailedToLoad(i);
+                        isNativeLoaded = false;
+                        if (!isInterLoaded) {
+                            callback.onNextAction();
+                        }
+                        Log.d(TAG, "onAdClosed: 100");
+                    }
+
+                    @Override
+                    public void onAdFailedToShow(@Nullable AdError adError) {
+                        super.onAdFailedToShow(adError);
+                        isNativeLoaded = false;
+                        Log.d(TAG, "onAdClosed: 101");
+                    }
+
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        callback.onAdClicked();
+                    }
+                });
+            }
+
+            @Override
+            public void onAdFailedToShow(@Nullable AdError adError) {
+                super.onAdFailedToShow(adError);
+                callback.onAdFailedToShow(adError);
+                if (shouldReloadAds) {
+                    Admob.getInstance().getInterstitialAds(activity, mInterstitialAd.getInterstitialAd().getAdUnitId(), new AdCallback() {
+                        @Override
+                        public void onInterstitialLoad(@Nullable InterstitialAd interstitialAd) {
+                            super.onInterstitialLoad(interstitialAd);
+                            mInterstitialAd.setInterstitialAd(interstitialAd);
+                            callback.onInterstitialLoad(mInterstitialAd.getInterstitialAd());
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                            super.onAdFailedToLoad(i);
+                            callback.onAdFailedToLoad(i);
+                        }
+
+                        @Override
+                        public void onAdFailedToShow(@Nullable AdError adError) {
+                            super.onAdFailedToShow(adError);
+                            callback.onAdFailedToShow(adError);
+                        }
+
+                    });
+                } else {
+                    mInterstitialAd.setInterstitialAd(null);
+                }
+
+                /*if(!isNativeLoaded && !isInterLoaded) {
+                    callback.onNextAction();
+                }*/
+            }
+
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+                callback.onAdClicked();
+            }
+
+            @Override
+            public void onInterstitialShow() {
+                super.onInterstitialShow();
+                callback.onInterstitialShow();
+            }
+        };
+        Admob.getInstance().forceShowInterstitial(activity, mInterstitialAd.getInterstitialAd(), adCallback);
+    }
 }

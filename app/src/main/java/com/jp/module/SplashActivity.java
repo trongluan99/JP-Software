@@ -3,9 +3,9 @@ package com.jp.module;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.ads.jp.ads.JPAd;
 import com.ads.jp.ads.wrapper.ApInterstitialAd;
 import com.ads.jp.funtion.AdCallback;
+import com.google.android.gms.ads.LoadAdError;
 
 @SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
@@ -31,7 +32,7 @@ public class SplashActivity extends AppCompatActivity {
         btnLoad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*JPAd.getInstance().getInterstitialAds(SplashActivity.this, BuildConfig.ad_interstitial_splash, new AdCallback() {
+                JPAd.getInstance().getInterstitialAds(SplashActivity.this, BuildConfig.ad_interstitial_splash, new AdCallback() {
                     @Override
                     public void onApInterstitialLoad(@Nullable ApInterstitialAd apInterstitialAd) {
                         super.onApInterstitialLoad(apInterstitialAd);
@@ -44,33 +45,31 @@ public class SplashActivity extends AppCompatActivity {
                         super.onAdFailedToLoad(i);
                         Toast.makeText(SplashActivity.this, "Ads Failed", Toast.LENGTH_SHORT).show();
                     }
-                });*/
-                JPAd.getInstance().loadSplashInterOrNativeAds(SplashActivity.this, BuildConfig.ad_interstitial_splash, BuildConfig.ad_native, R.layout.native_full, false, 30000, 5000, new AdCallback() {
+                });
+                /*JPAd.getInstance().loadSplashInterOrNativeAds(SplashActivity.this, BuildConfig.ad_interstitial_splash, BuildConfig.ad_native, R.layout.native_full, true, 30000, 5000, new AdCallback() {
                     @Override
                     public void onNextAction() {
                         super.onNextAction();
                         startActivity(new Intent(SplashActivity.this, MainActivity.class));
                     }
-                });
+                });*/
             }
         });
 
         btnShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mInterSplash != null) {
-                    JPAd.getInstance().forceShowInterstitial(SplashActivity.this, mInterSplash, new AdCallback() {
-                        @Override
-                        public void onNextAction() {
-                            super.onNextAction();
-                            startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                        }
-                    }, false);
-                }
+                JPAd.getInstance().forceShowInterstitialAndNativeFull(SplashActivity.this, mInterSplash, BuildConfig.ad_native, R.layout.native_full, new AdCallback() {
+                    @Override
+                    public void onNextAction() {
+                        super.onNextAction();
+                        startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                    }
+                }, true);
             }
         });
 
-        JPAd.getInstance().loadInterSplashPriority4SameTime(this,
+        /*JPAd.getInstance().loadInterSplashPriority4SameTime(this,
                 BuildConfig.ad_interstitial_splash,
                 BuildConfig.ad_interstitial_splash,
                 BuildConfig.ad_interstitial_splash,
@@ -124,6 +123,6 @@ public class SplashActivity extends AppCompatActivity {
                             }
                         });
                     }
-                });
+                });*/
     }
 }
